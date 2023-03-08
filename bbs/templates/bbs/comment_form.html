@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="发布">
+    来源文章 {{ post.title }}
+    来源评论 {{ comment.content }}
+</form>
+{% endblock %}

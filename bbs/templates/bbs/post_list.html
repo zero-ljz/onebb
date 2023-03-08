@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article>
+    <h2>Posts</h2>
+    <ul>
+        {% for post in object_list %}
+            <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <footer><a href="{% url 'bbs:post-create' %}">写文章</a></footer>
+</article>
+
+{{ test }}
+{% endblock %}

@@ -18,9 +18,9 @@ from django.db import models
 
 
 class Collect(models.Model):
-    collector = models.ForeignKey('User', models.DO_NOTHING)
-    collected = models.ForeignKey('Post', models.DO_NOTHING)
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    collector = models.ForeignKey('User', models.CASCADE)
+    collected = models.ForeignKey('Post', models.CASCADE)
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     class Meta:
         managed = True
@@ -29,12 +29,12 @@ class Collect(models.Model):
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField(blank=True, null=True)
-    created = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-    reviewed = models.BooleanField(blank=True, null=True)
-    post = models.ForeignKey('Post', models.DO_NOTHING, blank=True, null=True)
-    author = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
-    replied = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    content = models.TextField(blank=False, null=True)
+    created = models.DateTimeField(blank=False, null=True, auto_now_add=True)
+    reviewed = models.BooleanField(blank=False, null=True, default=True)
+    post = models.ForeignKey('Post', models.CASCADE, blank=False, null=True)
+    author = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
+    replied = models.ForeignKey('self', models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.content
@@ -45,9 +45,9 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey('User', models.DO_NOTHING, related_name='follower_user')
-    followed = models.ForeignKey('User', models.DO_NOTHING, related_name='followed_user')
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    follower = models.ForeignKey('User', models.CASCADE, related_name='follower_user')
+    followed = models.ForeignKey('User', models.CASCADE, related_name='followed_user')
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     class Meta:
         managed = True
@@ -55,9 +55,9 @@ class Follow(models.Model):
 
 
 class Like(models.Model):
-    liker = models.ForeignKey('User', models.DO_NOTHING)
-    liked = models.ForeignKey('Post', models.DO_NOTHING)
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    liker = models.ForeignKey('User', models.CASCADE)
+    liked = models.ForeignKey('Post', models.CASCADE)
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     class Meta:
         managed = True
@@ -67,8 +67,8 @@ class Like(models.Model):
 class Log(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField()
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-    owner = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
+    owner = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
 
     def __str__(self):
         return self.content
@@ -79,10 +79,10 @@ class Log(models.Model):
 
 
 class Message(models.Model):
-    sender = models.ForeignKey('User', models.DO_NOTHING, related_name='sender_user')
-    received = models.ForeignKey('User', models.DO_NOTHING, related_name='received_user')
-    content = models.TextField(blank=True, null=True)
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    sender = models.ForeignKey('User', models.CASCADE, related_name='sender_user')
+    received = models.ForeignKey('User', models.CASCADE, related_name='received_user')
+    content = models.TextField(blank=False, null=True)
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     def __str__(self):
         return self.content
@@ -95,9 +95,9 @@ class Message(models.Model):
 class Notification(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField()
-    is_read = models.BooleanField(blank=True, null=True)
-    timestamp = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-    receiver = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    is_read = models.BooleanField(blank=False, null=True, default=False)
+    timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
+    receiver = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
 
     def __str__(self):
         return self.content
@@ -109,7 +109,7 @@ class Notification(models.Model):
 
 class Option(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, null=True, max_length=200)
+    name = models.CharField(blank=False, null=True, max_length=200)
     value = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -122,7 +122,7 @@ class Option(models.Model):
 
 class Permission(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, null=True, max_length=200)
+    name = models.CharField(blank=False, null=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -134,7 +134,7 @@ class Permission(models.Model):
 
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, null=True, max_length=200)
+    name = models.CharField(blank=False, null=True, unique=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -146,14 +146,14 @@ class Tag(models.Model):
 
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(blank=True, null=True, max_length=200)
-    content = models.TextField(blank=True, null=True)
+    title = models.CharField(blank=False, null=True, max_length=200)
+    content = models.TextField(blank=False, null=True)
     content_html = models.TextField(blank=True, null=True)
-    read_count = models.IntegerField(blank=True, null=True)
-    created = models.DateTimeField(blank=True, null=True, auto_now_add=True) # default=timezone.now
-    author = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    read_count = models.IntegerField(blank=False, null=True, default=0)
+    created = models.DateTimeField(blank=False, null=True, auto_now_add=True) # default=timezone.now
+    author = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
     
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title
@@ -165,9 +165,9 @@ class Post(models.Model):
 
 class Role(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, null=True, max_length=200)
+    name = models.CharField(blank=False, null=True, max_length=200)
 
-    permissions = models.ManyToManyField(Permission)
+    permissions = models.ManyToManyField(Permission, blank=True)
 
     def __str__(self):
         return self.name
@@ -180,18 +180,29 @@ class Role(models.Model):
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(blank=True, null=True, max_length=200)
-    username = models.CharField(blank=True, null=True, max_length=200)
+    username = models.CharField(blank=False, unique=True, null=True, max_length=200)
     password = models.CharField(blank=True, null=True, max_length=200)
-    mail = models.EmailField(blank=True, null=True, max_length=200)
+    mail = models.EmailField(blank=True, unique=True, null=True, max_length=200)
     url = models.URLField(blank=True, null=True, max_length=200)
     location = models.CharField(blank=True, null=True, max_length=200)
     description = models.CharField(blank=True, null=True, max_length=200)
     last_login = models.DateTimeField(blank=True, null=True)
-    created = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    created = models.DateTimeField(blank=False, null=True, auto_now_add=True)
     role = models.ForeignKey(Role, models.DO_NOTHING, blank=True, null=True)
     
     def __str__(self):
         return self.username
+    
+    def create(self):
+        pass
+    def save(self):
+        pass
+    def delete(self):
+        pass
+    def set_password(self):
+        pass
+    def check_password(self):
+        pass
         
     class Meta:
         managed = True

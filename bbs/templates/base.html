@@ -7,15 +7,46 @@
     <title>Hello, world!</title>
   </head>
   <body>
+
+
+ <!-- Nav -->
+ <nav class="container-fluid">
+  <ul>
+    <li><a href="{% url 'bbs:index' %}" class="contrast" ><strong>空心</strong></a></li>
+  </ul>
+  <ul>
+    <li>
+      <details role="list" dir="rtl">
+        <summary aria-haspopup="listbox" role="link" class="secondary">Theme</summary>
+        <ul role="listbox">
+          <li><a href="#" data-theme-switcher="auto">Auto</a></li>
+          <li><a href="#" data-theme-switcher="light">Light</a></li>
+          <li><a href="#" data-theme-switcher="dark">Dark</a></li>
+        </ul>
+      </details>
+    </li>
+    
+    <li>
+      {% if request.user.is_authenticated %} 
+        {{ request.user.username }} <a href="{% url 'bbs:logout' %}">注销</a>
+      {% else %} 
+        游客 <a href="{% url 'bbs:login' %}">登录</a>
+      {% endif %}
+    </li>
+  </ul>
+</nav><!-- ./ Nav -->
+
     <main class="container">
-      {% block main %}
+      {% block content %}
       {% endblock %}
     </main>
 
     {% block scripts %}
+    {% endblock %}
     <script>
  
     </script>
-    {% endblock %}
+    <!-- Minimal theme switcher -->
+    <script src="https://picocss.com/examples/js/minimal-theme-switcher.js"></script>
   </body>
 </html>

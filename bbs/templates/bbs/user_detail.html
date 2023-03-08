@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+    <h2>{{ object.username }}</h2>
+    <p>名字：{{ object.name }} <a href="{% url 'bbs:message-create' user.id %}">发私信</a></p>
+    <p>邮箱：{{ object.mail }}</p>
+
+    <p>角色：{{ object.role }}</p>
+    <p>注册时间：{{ object.created |date:"F j, Y" }}</p>
+
+
+
+    文章
+    <ul>
+        {% for post in post_list %}
+            <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    关注的人
+    <ul>
+        {% for user in follow_list %}
+            <li><a href="{% url 'bbs:user-detail' user.id %}">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
+    
+    粉丝
+    <ul>
+        {% for user in fans_list %}
+            <li><a href="{% url 'bbs:user-detail' user.id %}">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
+
+    收到的私信
+    <ul>
+        {% for msg in message_list %}
+            <li><a href="{% url 'bbs:user-detail' msg.sender_id %}">{{ msg.sender }}</a> 对你说 {{ msg.content }} </li>
+        {% endfor %}
+    </ul>
+
+    收藏的文章
+    <ul>
+        {% for post in collect_list %}
+        <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+    
+    点赞的文章
+    <ul>
+        {% for post in like_list %}
+        <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    发表的评论
+    <ul>
+        {% for comment in comment_list %}
+            <li>在 <a href="{% url 'bbs:post-detail' comment.post_id %}">{{ comment.post }}</a> 中说 {{ comment.content }} </li>
+        {% endfor %}
+    </ul>
+
+    系统提醒
+    <ul>
+        {% for notification in notification_list %}
+        <li>{{ notification.content }}</li>
+        {% endfor %}
+    </ul>
+
+    操作日志
+    <ul>
+        {% for log in log_list %}
+        <li>{{ log.content }}</li>
+        {% endfor %}
+    </ul>
+
+    
+{% endblock %}
