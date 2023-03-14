@@ -15,29 +15,26 @@
     {% endif %}
 {% endif %}
 
-<form method="post" action="{% url 'bbs:register' %}">
+{% if messages %}  
+<ul>   
+    {% for message in messages %}  
+        <li>{{ message }}</li>  
+        {% endfor %}  
+</ul>   
+{% endif %}  
+
+<form method="post" action="{% url 'accounts:register' %}">
 {% csrf_token %}
-
-<div>
-  <td>{{ form.username.label_tag }}</td>
-  <td>{{ form.username }}</td>
-</div>
-<div>
-  <td>{{ form.password.label_tag }}</td>
-  <td>{{ form.password }}</td>
-</div>
-<div>
-    <td>{{ form.mail.label_tag }}</td>
-    <td>{{ form.mail }}</td>
-  </div>
-
-<div>
+{{ form.as_p }}
   <input type="submit" value="注册" />
   <input type="hidden" name="next" value="{{ next }}" />
 </div>
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'bbs:login' %}">Lost password?</a></p>
+<p><a href="{% url 'accounts:password_reset' %}">忘记密码？</a></p>
 
 {% endblock %}
+
+
+

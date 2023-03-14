@@ -1,0 +1,25 @@
+<aside>
+  
+    <b>文章归档</b>
+<ul>
+    {% for archive in archives %}
+        <li><a href="{% url 'bbs:archive-detail' archive.year archive.month %}">{{ archive.year }}年{{ archive.month }}月</a></li>
+    {% endfor %}
+</ul>
+
+<b>热门文章</b>
+    <ul>
+        {% for post in top_posts %}
+            <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+    <b>最新评论</b>
+    <ul>
+        {% for comment in new_comments %}
+        <li><a href="{% url 'accounts:user-detail' comment.author_id %}">{{ comment.author }}</a> 在 <a href="{% url 'bbs:post-detail' comment.post_id %}">{{ comment.post }}</a> 中说 {{ comment.content }} </li>
+    {% endfor %}
+    </ul>
+
+  </aside>

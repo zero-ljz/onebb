@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('accounts/', include('accounts.urls')),
     path('bbs/', include('bbs.urls')), # 引入 bbs 应用中的 URL 配置
     path('admin/', admin.site.urls),
 ]

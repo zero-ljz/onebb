@@ -15,10 +15,10 @@
 # 可以重命名模型，但不要重命名db_table的值或字段名。
 
 from django.db import models
-
+from django.urls import reverse
 
 class Collect(models.Model):
-    collector = models.ForeignKey('User', models.CASCADE)
+    collector = models.ForeignKey('accounts.User', models.CASCADE)
     collected = models.ForeignKey('Post', models.CASCADE)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
@@ -29,11 +29,11 @@ class Collect(models.Model):
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField(blank=False, null=True)
+    content = models.TextField('评论内容', blank=False, null=True)
     created = models.DateTimeField(blank=False, null=True, auto_now_add=True)
     reviewed = models.BooleanField(blank=False, null=True, default=True)
     post = models.ForeignKey('Post', models.CASCADE, blank=False, null=True)
-    author = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
+    author = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
     replied = models.ForeignKey('self', models.CASCADE, blank=True, null=True)
 
     def __str__(self):
@@ -45,8 +45,8 @@ class Comment(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey('User', models.CASCADE, related_name='follower_user')
-    followed = models.ForeignKey('User', models.CASCADE, related_name='followed_user')
+    follower = models.ForeignKey('accounts.User', models.CASCADE, related_name='follower_user')
+    followed = models.ForeignKey('accounts.User', models.CASCADE, related_name='followed_user')
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     class Meta:
@@ -55,7 +55,7 @@ class Follow(models.Model):
 
 
 class Like(models.Model):
-    liker = models.ForeignKey('User', models.CASCADE)
+    liker = models.ForeignKey('accounts.User', models.CASCADE)
     liked = models.ForeignKey('Post', models.CASCADE)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
@@ -68,7 +68,7 @@ class Log(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField()
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
-    owner = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
+    owner = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
 
     def __str__(self):
         return self.content
@@ -79,9 +79,9 @@ class Log(models.Model):
 
 
 class Message(models.Model):
-    sender = models.ForeignKey('User', models.CASCADE, related_name='sender_user')
-    received = models.ForeignKey('User', models.CASCADE, related_name='received_user')
-    content = models.TextField(blank=False, null=True)
+    sender = models.ForeignKey('accounts.User', models.CASCADE, related_name='sender_user')
+    received = models.ForeignKey('accounts.User', models.CASCADE, related_name='received_user')
+    content = models.TextField('消息内容', blank=False, null=True)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     def __str__(self):
@@ -94,10 +94,10 @@ class Message(models.Model):
 
 class Notification(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField()
+    content = models.TextField('通知内容')
     is_read = models.BooleanField(blank=False, null=True, default=False)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
-    receiver = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
+    receiver = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
 
     def __str__(self):
         return self.content
@@ -109,8 +109,8 @@ class Notification(models.Model):
 
 class Option(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=False, null=True, max_length=200)
-    value = models.TextField(blank=True, null=True)
+    name = models.CharField('名称', blank=False, null=True, max_length=200)
+    value = models.TextField('值', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -146,17 +146,20 @@ class Tag(models.Model):
 
 class Post(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(blank=False, null=True, max_length=200)
-    content = models.TextField(blank=False, null=True)
+    title = models.CharField('标题', blank=False, null=True, max_length=200)
+    content = models.TextField('内容', blank=False, null=True)
     content_html = models.TextField(blank=True, null=True)
     read_count = models.IntegerField(blank=False, null=True, default=0)
     created = models.DateTimeField(blank=False, null=True, auto_now_add=True) # default=timezone.now
-    author = models.ForeignKey('User', models.CASCADE, blank=False, null=True)
+    author = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
     
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('bbs:post-detail', kwargs={'pk': self.pk})
     
     class Meta:
         managed = True
@@ -176,34 +179,33 @@ class Role(models.Model):
         managed = True
         db_table = 'role'
 
+from django.utils import timezone
+from django.contrib.auth.models import PermissionsMixin
 
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, null=True, max_length=200)
-    username = models.CharField(blank=False, unique=True, null=True, max_length=200)
-    password = models.CharField(blank=True, null=True, max_length=200)
-    mail = models.EmailField(blank=True, unique=True, null=True, max_length=200)
-    url = models.URLField(blank=True, null=True, max_length=200)
-    location = models.CharField(blank=True, null=True, max_length=200)
-    description = models.CharField(blank=True, null=True, max_length=200)
-    last_login = models.DateTimeField(blank=True, null=True)
-    created = models.DateTimeField(blank=False, null=True, auto_now_add=True)
-    role = models.ForeignKey(Role, models.DO_NOTHING, blank=True, null=True)
-    
-    def __str__(self):
-        return self.username
-    
-    def create(self):
-        pass
-    def save(self):
-        pass
-    def delete(self):
-        pass
-    def set_password(self):
-        pass
-    def check_password(self):
-        pass
-        
-    class Meta:
-        managed = True
-        db_table = 'user'
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
+
+
+    # from django.contrib.auth.validators import UnicodeUsernameValidator
+
+    # username_validator = UnicodeUsernameValidator()
+    # username = models.CharField(max_length=150, unique=True, help_text='要求150个字符或更少，只能是字母、数字和 @/./+/-/_。', validators=[username_validator],
+    #     error_messages={
+    #         'unique': "用户名已存在",
+    #     },
+    # )
+    # first_name = models.CharField(max_length=150, blank=True)
+    # last_name = models.CharField(max_length=150, blank=True)
+    # email = models.EmailField(blank=True)
+    # is_staff = models.BooleanField(default=False) # 指定用户是否可以登录到此管理站点。
+    # is_active = models.BooleanField(default=True) # 1、指定是否应将此用户视为活动用户。 2、取消选择而不是删除帐户。
+
+    # date_joined = models.DateTimeField(default=timezone.now)
+
+    # objects = UserManager()
+
+    # EMAIL_FIELD = 'email'
+    # USERNAME_FIELD = 'username'
+    # REQUIRED_FIELDS = ['email']
+
+

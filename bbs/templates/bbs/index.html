@@ -1,35 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="grid">
 
 <ul>
-<li><a href="{% url 'bbs:user-list' %}">用户列表</a></li>
+<li><a href="{% url 'accounts:user-list' %}">用户列表</a></li>
 <li><a href="{% url 'bbs:post-list' %}">文章列表</a></li>
 <li><a href="{% url 'bbs:tag-list' %}">标签列表</a></li>
 </ul>
 
 
-
-归档：
-    <ul>
-        {% for archive in archives %}
-            <li><a href="{% url 'bbs:archive-detail' archive.year archive.month %}">{{ archive.year }}年{{ archive.month }}月</a></li>
-        {% endfor %}
-    </ul>
-
-热门文章：
-        <ul>
-            {% for post in top_posts %}
-                <li><a href="{% url 'bbs:post-detail' post.id %}">{{ post.title }}</a></li>
-            {% endfor %}
-        </ul>
-
-
-        最新评论：
-        <ul>
-            {% for comment in new_comments %}
-            <li><a href="{% url 'bbs:user-detail' comment.author_id %}">{{ comment.author }}</a> 在 <a href="{% url 'bbs:post-detail' comment.post_id %}">{{ comment.post }}</a> 中说 {{ comment.content }} </li>
-        {% endfor %}
-        </ul>
+{% include 'bbs/_sidebar.html' %}
+</div>
 
 {% endblock %}

@@ -5,8 +5,11 @@
 
 
     <h2>{{ object.username }}</h2>
-    <p>名字：{{ object.name }} <a href="{% url 'bbs:message-create' user.id %}">发私信</a></p>
-    <p>邮箱：{{ object.mail }}</p>
+    <p>名字：{{ object.name }} <a href="{% url 'bbs:message-create' user.id %}">发私信</a> <a href="{% url 'bbs:follow' user.id %}">关注</a> <a href="{% url 'bbs:user_update' user.id %}">改资料</a> <a href="{% url 'accounts:password_change'  %}">改密码</a> </p>
+    <p>邮箱：{{ object.email }}</p>
+    <p>所在位置：{{ object.location }}</p>
+    <p>个人主页：{{ object.url }}</p>
+    <p>个人描述：{{ object.description }}</p>
 
     <p>角色：{{ object.role }}</p>
     <p>注册时间：{{ object.created |date:"F j, Y" }}</p>
@@ -23,23 +26,26 @@
     关注的人
     <ul>
         {% for user in follow_list %}
-            <li><a href="{% url 'bbs:user-detail' user.id %}">{{ user.username }}</a></li>
+            <li><a href="{% url 'accounts:user-detail' user.id %}">{{ user.username }}</a></li>
         {% endfor %}
     </ul>
     
     粉丝
     <ul>
         {% for user in fans_list %}
-            <li><a href="{% url 'bbs:user-detail' user.id %}">{{ user.username }}</a></li>
+            <li><a href="{% url 'accounts:user-detail' user.id %}">{{ user.username }}</a></li>
         {% endfor %}
     </ul>
+
+    {% if request.user.is_authenticated and request.user.username == object.username or True %} 
 
     收到的私信
     <ul>
         {% for msg in message_list %}
-            <li><a href="{% url 'bbs:user-detail' msg.sender_id %}">{{ msg.sender }}</a> 对你说 {{ msg.content }} </li>
+            <li><a href="{% url 'accounts:user-detail' msg.sender_id %}">{{ msg.sender }}</a> 对你说 {{ msg.content }} </li>
         {% endfor %}
     </ul>
+    
 
     收藏的文章
     <ul>
@@ -48,6 +54,8 @@
         {% endfor %}
     </ul>
     
+    {% endif %} 
+
     点赞的文章
     <ul>
         {% for post in like_list %}

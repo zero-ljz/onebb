@@ -25,8 +25,10 @@ SECRET_KEY = 'django-insecure-6_yexxn_!wf3=m&@(f#)(l(v%b60wj2w10_25^t3(x6rjht)ur
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['42.193.229.54','127.0.0.1']
 
+# 提供一个引用自定义模型的值来覆盖默认的用户模型
+AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +58,7 @@ ROOT_URLCONF = 'onebb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

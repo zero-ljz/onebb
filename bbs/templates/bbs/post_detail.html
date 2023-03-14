@@ -2,11 +2,13 @@
 
 {% block content %}
 
+<div class="grid">
+<section>
 <article id="article">
     <h2>{{ object.title }}</h2>
     <p><a href="{% url 'bbs:post-update' object.id %}">编辑</a> 或者 <a href="{% url 'bbs:post-delete' object.id %}">删除</a> 此文章</p>
     <p>阅读次数：{{ object.read_count }}</p>
-    <p>作者：<a href="{% url 'bbs:user-detail' object.author_id %}">{{ object.author }}</a></p>
+    <p>作者：<a href="{% url 'accounts:user-detail' object.author_id %}">{{ object.author }}</a></p>
     <p>发布时间：{{ object.created }}</p>
     文章标签：
     <ul>
@@ -16,27 +18,34 @@
     </ul>
 
     <p>{{ object.content }}</p>
-    <footer><small><a href="">喜欢（0）</a> <a href="">收藏（0）</a> <a href="">评论（0）</a><a href="{% url 'bbs:comment-create' object.id 0 %}">评论此文章</a></footer></small></footer>
-
-    
+    <footer><small><a href="{% url 'bbs:like' object.id %}">点赞</a>（{{ like_list.count }}） <a href="{% url 'bbs:collect' object.id %}">收藏</a>（{{ collect_list.count }}） <a href="">评论（{{ comment_list.count }}）</a><a href="{% url 'bbs:comment-create' object.id 0 %}">评论此文章</a></footer></small></footer>
 
   </article>
+
+  <section id="comment-form">
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="发布">
+
+    </form>
+  </section>
 
   <section id="comment">
     <ul>
         {% for comment in comment_list %}
-            
-
             <li>
                 {% if comment.replied_id %}
                     回复 {{ comment.replied.author }} 说的 {{ comment.replied.content }}<br/>
                 {% endif %}
-                <a href="{% url 'bbs:user-detail' comment.author_id %}">{{ comment.author }}</a>：{{ comment.content }} <a href="{% url 'bbs:comment-create' comment.post_id comment.id %}">回复此评论</a></li>
+                <a href="{% url 'accounts:user-detail' comment.author_id %}">{{ comment.author }}</a>：{{ comment.content }} <a href="{% url 'bbs:comment-create' comment.post_id comment.id %}">回复此评论</a></li>
         {% endfor %}
     </ul>
   </section>
+</section>
 
+  {% include 'bbs/_sidebar.html' %}
+ 
 
+</div>
 
-    
 {% endblock %}
