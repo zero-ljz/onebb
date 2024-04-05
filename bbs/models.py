@@ -22,16 +22,21 @@ class Collect(models.Model):
     collected = models.ForeignKey('Post', models.CASCADE)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
+    def __str__(self):
+        return self.collector.name + ' 收藏了文章：' + self.collected.title
+
     class Meta:
         managed = True
         db_table = 'collect'
+        verbose_name_plural = '收藏'
+        verbose_name = '收藏'
 
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField('评论内容', blank=False, null=True)
     created = models.DateTimeField(blank=False, null=True, auto_now_add=True)
-    reviewed = models.BooleanField(blank=False, null=True, default=True)
+    reviewed = models.BooleanField('是否审核', blank=False, null=True, default=True)
     post = models.ForeignKey('Post', models.CASCADE, blank=False, null=True)
     author = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
     replied = models.ForeignKey('self', models.CASCADE, blank=True, null=True)
@@ -42,6 +47,8 @@ class Comment(models.Model):
     class Meta:
         managed = True
         db_table = 'comment'
+        verbose_name_plural = '评论'
+        verbose_name = '评论'
 
 
 class Follow(models.Model):
@@ -49,9 +56,14 @@ class Follow(models.Model):
     followed = models.ForeignKey('accounts.User', models.CASCADE, related_name='followed_user')
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
+    def __str__(self):
+        return self.follower.name + ' 关注了 ' + self.followed.name
+
     class Meta:
         managed = True
         db_table = 'follow'
+        verbose_name_plural = '关注'
+        verbose_name = '关注'
 
 
 class Like(models.Model):
@@ -59,14 +71,19 @@ class Like(models.Model):
     liked = models.ForeignKey('Post', models.CASCADE)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
+    def __str__(self):
+        return self.liker.name + ' 点赞了文章：' + self.liked.title
+
     class Meta:
         managed = True
         db_table = 'like'
+        verbose_name_plural = '点赞'
+        verbose_name = '点赞'
 
 
 class Log(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField()
+    content = models.TextField('内容')
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
     owner = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
 
@@ -76,6 +93,8 @@ class Log(models.Model):
     class Meta:
         managed = True
         db_table = 'log'
+        verbose_name_plural = '操作日志'
+        verbose_name = '操作日志'
 
 
 class Message(models.Model):
@@ -85,17 +104,19 @@ class Message(models.Model):
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
 
     def __str__(self):
-        return self.content
+        return self.sender.name + ' 对 ' + self.received.name + ' 说：' + self.content
     
     class Meta:
         managed = True
         db_table = 'message'
+        verbose_name_plural = '消息'
+        verbose_name = '消息'
 
 
 class Notification(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField('通知内容')
-    is_read = models.BooleanField(blank=False, null=True, default=False)
+    is_read = models.BooleanField('是否已读', blank=False, null=True, default=False)
     timestamp = models.DateTimeField(blank=False, null=True, auto_now_add=True)
     receiver = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
 
@@ -105,6 +126,8 @@ class Notification(models.Model):
     class Meta:
         managed = True
         db_table = 'notification'
+        verbose_name_plural = '系统通知'
+        verbose_name = '系统通知'
 
 
 class Option(models.Model):
@@ -118,6 +141,8 @@ class Option(models.Model):
     class Meta:
         managed = True
         db_table = 'option'
+        verbose_name_plural = '系统设置'
+        verbose_name = '系统设置'
 
 
 class Permission(models.Model):
@@ -130,6 +155,8 @@ class Permission(models.Model):
     class Meta:
         managed = True
         db_table = 'permission'
+        verbose_name_plural = '权限'
+        verbose_name = '权限'
 
 
 class Tag(models.Model):
@@ -142,6 +169,8 @@ class Tag(models.Model):
     class Meta:
         managed = True
         db_table = 'tag'
+        verbose_name_plural = '标签'
+        verbose_name = '标签'
 
 
 class Post(models.Model):
@@ -149,7 +178,7 @@ class Post(models.Model):
     title = models.CharField('标题', blank=False, null=True, max_length=200)
     content = models.TextField('内容', blank=False, null=True)
     content_html = models.TextField(blank=True, null=True)
-    read_count = models.IntegerField(blank=False, null=True, default=0)
+    read_count = models.IntegerField('阅读量', blank=False, null=True, default=0)
     created = models.DateTimeField(blank=False, null=True, auto_now_add=True) # default=timezone.now
     author = models.ForeignKey('accounts.User', models.CASCADE, blank=False, null=True)
     
@@ -164,6 +193,8 @@ class Post(models.Model):
     class Meta:
         managed = True
         db_table = 'post'
+        verbose_name_plural = '文章'
+        verbose_name = '文章'
 
 
 class Role(models.Model):
@@ -178,6 +209,8 @@ class Role(models.Model):
     class Meta:
         managed = True
         db_table = 'role'
+        verbose_name_plural = '角色'
+        verbose_name = '角色'
 
 from django.utils import timezone
 from django.contrib.auth.models import PermissionsMixin

@@ -5,12 +5,13 @@ from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
 from . import views
+from .forms import CustomAuthenticationForm
 
 app_name = 'accounts'
 urlpatterns = [
     path('', views.index, name='index'),
     #path('', include('django.contrib.auth.urls')),
-    path('login/', auth_views.LoginView.as_view(redirect_field_name='next', extra_context={},redirect_authenticated_user=True), name='login'),
+    path('login/', auth_views.LoginView.as_view(redirect_field_name='next', extra_context={},redirect_authenticated_user=True, authentication_form=CustomAuthenticationForm), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),

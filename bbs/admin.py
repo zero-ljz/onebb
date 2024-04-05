@@ -6,15 +6,33 @@ from .models import Collect, Comment, Follow, Like, Log, Message, Notification, 
 from accounts.models import User
 
 admin.site.register(Collect)
-admin.site.register(Comment)
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('content', 'post', 'reviewed', 'author', 'created')
+    search_fields = ['content']
+admin.site.register(Comment, CommentAdmin)
+
 admin.site.register(Follow)
 admin.site.register(Like)
-admin.site.register(Log)
+
+class LogAdmin(admin.ModelAdmin):
+    list_display = ('content', 'owner', 'timestamp')
+admin.site.register(Log, LogAdmin)
+
 admin.site.register(Message)
-admin.site.register(Notification)
+
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('content', 'is_read', 'timestamp')
+admin.site.register(Notification, NotificationAdmin)
+
 admin.site.register(Option)
 admin.site.register(Permission)
-admin.site.register(Post)
+
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'read_count', 'author', 'created')
+    search_fields = ['title', 'content']
+admin.site.register(Post, PostAdmin)
+
 admin.site.register(Role)
 admin.site.register(Tag)
 

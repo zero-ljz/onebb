@@ -2,10 +2,46 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'accounts:login' %}">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="登录" />
-</form>
-<a href="{% url 'accounts:register' %}">注册用户</a>
+<style>
+html,body {
+height: 100%;
+}
+
+.form-signin {
+max-width: 330px;
+padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+z-index: 2;
+}
+
+.form-signin input[type="email"] {
+margin-bottom: -1px;
+border-bottom-right-radius: 0;
+border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+margin-bottom: 10px;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+}
+</style>
+<div style="display: flex; align-items: center; padding-top: 1.5rem; padding-bottom: 1.5rem;">
+<div class="form-signin w-100 m-auto">
+    <form method="post" action="{% url 'accounts:login' %}">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 fw-normal">登录</h1>
+        {% for field in form %}
+        <div class="form-floating">
+            {{ field }}
+            {{ field.label_tag }}
+        </div>
+        {% endfor %}
+        <input class="btn btn-primary w-100 py-2" type="submit" value="登录" />
+    </form>
+    <a href="{% url 'accounts:register' %}">注册用户</a>
+</div>
+</div>
 {% endblock %}

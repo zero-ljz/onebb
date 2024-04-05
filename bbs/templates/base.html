@@ -1,131 +1,247 @@
 {% load static %}
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh-Hans" class="h-100">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="{% static 'bbs/css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="https://i.iapp.run/css/bootstrap.ext.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="{% static 'bbs/css/style.css' %}" />
+    <link rel="icon" href="https://v5.bootcss.com/docs/5.0/assets/img/favicons/favicon.ico" />
+
     <title>{% block title %}{% endblock %}</title>
-    <style>
-      /* Global CSS variables */
-:root {
-  --spacing-company: 3rem;
-  --font-weight: 400;
-  --border-radius: 0;
-
-}
-
-/* Typography */
-h2,
-h3,
-hgroup > :last-child {
-  font-weight: 200;
-}
-
-small {
-  color: var(--muted-color);
-}
-
-/* Header */
-.hero {
-  background-color: #394046;
-  background-image: url("assets/sascha-eremin-DNQ-M93tHmA-unsplash-3000x1000.jpg");
-  background-position: center;
-  background-size: cover;
-}
-
-header {
-  padding: var(--spacing-company) 0;
-}
-
-header hgroup > :last-child {
-  color: var(--h3-color);
-}
-
-header hgroup {
-  margin-bottom: var(--spacing-company);
-}
-
-/* Nav */
-summary[role="link"].contrast:is([aria-current],:hover,:active,:focus) {
-  background-color: transparent;
-  color: var(--contrast-hover);
-}
-
-/* Main */
-@media (min-width: 992px) {
-  main .grid {
-    grid-column-gap: var(--spacing-company);
-    grid-template-columns: auto 25%;
-  }
-}
-
-form.grid {
-  grid-row-gap: 0;
-}
-
-/* Aside nav */
-aside img {
-  margin-bottom: 0.25rem;
-}
-
-aside p {
-  margin-bottom: var(--spacing-company);
-  line-height: 1.25;
-}
-    </style>
   </head>
-  <body>
 
 
- <!-- Nav -->
- <nav class="container-fluid">
-  <ul>
-    <li><a href="{% url 'bbs:index' %}" class="contrast" ><strong>空心</strong></a><img src="{% static 'bbs/1.txt' %}" alt="Logo"></li>
-  </ul>
-  <ul>
-    <li>
-      <details role="list" dir="rtl">
-        <summary aria-haspopup="listbox" role="link" class="secondary">Theme</summary>
-        <ul role="listbox">
-          <li><a href="#" data-theme-switcher="auto">Auto</a></li>
-          <li><a href="#" data-theme-switcher="light">Light</a></li>
-          <li><a href="#" data-theme-switcher="dark">Dark</a></li>
-        </ul>
-      </details>
-    </li>
-    
-    <li>
-      {% if request.user.is_authenticated %} 
-        {{ request.user.username }} <a href="{% url 'accounts:logout' %}">注销</a>
-      {% else %} 
-        游客 <a href="{% url 'accounts:login' %}">登录</a>
-      {% endif %}
-    </li>
-  </ul>
-</nav><!-- ./ Nav -->
+  <body class="d-flex flex-column h-100" style="padding-top: 55px">
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-light acrylic-box shadow-sm border fixed-top ">
+        <div class="container">
+          <a class="navbar-brand text-primary" href="{% url 'bbs:index' %}">
+            <b>简书</b>
+          </a>
+          <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse collapse" id="navbarSupportedContent" style="">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">最新</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">关注</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">热门</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">专栏</a>
+              </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+              <li class="nav-item">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                  <input type="search" list="search" class="form-control form-control-dark" style="" placeholder="搜索..." aria-label="Search" />
+                </form>
+              </li>
+
+              {% if request.user.is_authenticated %} 
+              <li>{{ request.user.username }}</li>
+              <li class="dropdown">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false"> <img src="./img/avatar.jpg" alt="mdo" width="32" height="32" class="rounded-circle" /> </a>
+                <ul class="dropdown-menu text-small rounded-6" aria-labelledby="dropdownUser1">
+                  <li>
+                    <a class="dropdown-item" href="#"> <i class="fa fa-commenting"></i> 消息</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"><i class="fa fa-edit"></i> 写文章</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"><i class="fa fa-user-circle-o"></i> 个人中心</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="fa fa-cog"></i> 设置</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'accounts:logout' %}"><i class="fa fa-power-off" style="color: #76839b"></i> 注销</a>
+                  </li>
+                </ul>
+              </li>
+            {% else %} 
+              <li class="nav-item" style="display: block">
+                <a class="btn btn-primary me-2" href="{% url 'accounts:login' %}">登录</a>
+                <!--<button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalLogin">登录</button>-->
+              <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalSignin">注册</button>
+              </li>
+            {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
 
 
-    <main class="container">
-      
-      {% block content %}
-      {% endblock %}
 
-      
+
+
+
+    <main>
+      <div class="container">
+            {% block content %}
+            {% endblock %}
+      </div>
+      <!-- 容器结束 -->
     </main>
 
-    <!-- Footer -->
-    <footer class="container">
-      <small>Built with <a href="https://picocss.com">Pico</a> • <a href="https://github.com/picocss/examples/tree/master/company/">Source code</a></small>
-    </footer><!-- ./ Footer -->
 
+    <footer class="container-full mt-auto bg-light border-top">
+      <div class="py-5 text-secondary text-center">
+        <p>
+          <small
+            >&copy; 2015-2023 空心. All Rights Reserved.<br />
+            Powered by <a target="_blank" href="https://github.com/zero-ljz/onebb">Onebb</a>.
+          </small>
+        </p>
+      </div>
+    </footer>
 
     {% block scripts %}
     {% endblock %}
     <script>
  
     </script>
-    <!-- Minimal theme switcher -->
-    <script src="https://picocss.com/examples/js/minimal-theme-switcher.js"></script>
+
+    <script src="{% static 'bbs/js/script.js' %}"></script>
+
+    <script src="{% static 'bbs/js/bootstrap.bundle.js' %}"></script>
+
+
+
+    <script>
+      /*
+var xhr = new XMLHttpRequest();
+ 
+xhr.onload = function () {
+    // 输出接收到的文字数据
+    alert(xhr.responseText);
+}
+ 
+xhr.onerror = function () {
+    alert("请求出错");
+}
+ 
+// 发送异步 GET 请求
+xhr.open("GET", "http://cn.bing.com/HPImageArchive.aspx?format=js&idx=5&n=1", true);
+
+xhr.setRequestHeader("Content-type","application/json;charset=UTF-8");
+//xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xhr.send();
+
+*/
+
+      /*
+
+// Set config defaults when creating the instance
+const instance = axios.create({
+  baseURL: 'https://cn.bing.com'
+});
+
+// Alter defaults after instance has been created
+instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+
+// Override timeout for this request as it's known to take a long time
+instance.get('/HPImageArchive.aspx?format=js&idx=5&n=1', {
+  timeout: 5000
+}
+
+);
+
+*/
+
+      /*
+      const axios = require('axios').default;
+     // axios.defaults.headers.post["Content-Type"] = "application/json;charset=UTF-8";
+      //axios.defaults.headers.common['Authorization'] = 'AUTH_TOKEN';
+      //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+      // Make a request for a user with a given ID
+      axios
+        .get("https//cn.bing.com/HPImageArchive.aspx?format=js&idx=5&n=1")
+        .then(function (response) {
+          // handle success
+          alert(response);
+          alert(1);
+        })
+        .catch(function (error) {
+          // handle error
+          alert(error);
+        })
+        .then(function () {
+
+        });
+
+*/
+
+      //document.querySelector("body").style.backgroundImage = "url(https://api.dujin.org/bing/1920.php)";
+      //document.querySelector("body").style.backgroundImage = "url('./img/bg.jpg')";
+    </script>
+
+
+    <!--
+  <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/locale/zh-cn.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/plugin/utc.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/plugin/relativeTime.js"></script>
+
+  <script>
+  dayjs.locale('zh-cn');
+  dayjs.extend(window.dayjs_plugin_utc);
+  dayjs.extend(window.dayjs_plugin_relativeTime);
+  var time = dayjs("2021-01-24 20:54:24").format('MM.DD HH:mm');
+  var time2 = dayjs("2021-01-24 20:54:24").utc().fromNow()
+  window.onload = function(){
+  }
+  </script>
+-->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOM fully loaded and parsed");
+
+      const navbar = document.querySelector('.navbar');
+      const headerHeight = navbar.clientHeight;
+      let lastScrollTop = 0;
+      let scrolledToTop = true;
+
+      window.addEventListener('scroll', function() {
+          const scrollTop = window.scrollY;
+
+          if (scrollTop > lastScrollTop) {
+              // 向下滚动
+              if (scrollTop > headerHeight) {
+                  if (scrolledToTop) {
+                      navbar.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                  }
+                  scrolledToTop = false;
+              }
+          } else {
+              // 向上滚动
+              if (scrollTop === 0) {
+                  scrolledToTop = true;
+                  navbar.style.backgroundColor = 'transparent';
+              }
+          }
+
+          lastScrollTop = scrollTop;
+      });
+  });
+</script>
+
   </body>
 </html>

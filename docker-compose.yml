@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  onebb:
+    image: onebb
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
